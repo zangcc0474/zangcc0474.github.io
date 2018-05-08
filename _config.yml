@@ -4,7 +4,8 @@ email:       chenchao.zang@columbia.edu
 author:      Chenchao Zang
 description: "Personal web page for Chenchao Zang."
 baseurl:     ""
-url:         "http://chenchaozang.com"
+#url:         "http://chenchaozang.com"
+url:          "zangcc0474.github.io
 
 # Google analytics
 # google_analytics: UA-47292035-1
