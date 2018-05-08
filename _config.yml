@@ -1,0 +1,57 @@
+# Site settings
+title:       Chenchao Zang
+email:       chenchao.zang@columbia.edu
+author:      Chenchao Zang
+description: "Personal web page for Chenchao Zang."
+baseurl:     ""
+url:         "http://chenchaozang.com"
+
+# Google analytics
+# google_analytics: UA-47292035-1
+
+# Optional features
+animated:           false
+show_related_posts: false
+show_post_footers:  true
+
+# Disqus post comments
+# (leave blank to disable Disqus)
+disqus_shortname:
+
+# Social icons
+show_social_icons:  true
+github_username:    "zangcc0474"
+linkedin_username:  "chenchaozang"
+angellist_username:
+bitcoin_url:
+paypal_url:
+flattr_button:
+
+# Post sharing icons
+show_sharing_icons: false
+share_text:         "share"
+share_facebook:     false
+share_twitter:      false
+share_googleplus:   false
+share_linkedin:     false
+share_digg:         false
+share_tumblr:       false
+share_reddit:       false
+share_stumbleupon:  false
+share_hackernews:   false
+
+# Companies
+companies: [
+  {shift: 'cow'},
+  {shift: 'cow2'}
+]
+
+# Build settings
+markdown:      kramdown
+permalink:     pretty
+paginate:      5
+paginate_path: "/blog/page:num/"
+sass:
+  compressed:  true
+gems:
+  - jekyll-paginate
