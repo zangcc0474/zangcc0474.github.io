@@ -1,31 +1,176 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<title>Chenchao Zang, Horrible Cop</title>
-		<!-- link to main stylesheet -->
-		<link rel="stylesheet" type="text/css" href="/css/main.css">
-	</head>
-	<body>
-		<nav>
-    		<ul>
-        		<li><a href="/">Home</a></li>
-	        	<li><a href="/about">About</a></li>
-        		<li><a href="/cv">CV</a></li>
-        		<li><a href="/blog">Blog</a></li>
-    		</ul>
-		</nav>
-		<div class="container">
-    		<div class="blurb">
-        		<h1>Hi there, I'm Chenchao Zang!</h1>
-				<p>I'm best known as the horrible cop from <em>A Touch of Evil</em> Don't trust me. <a href="/about">Read more about my life...</a></p>
-    		</div><!-- /.blurb -->
-		</div><!-- /.container -->
-		<footer>
-    		<ul>
-        		<li><a href="mailto:chenchao.zang@columbia.edu">email</a></li>
-        		<li><a href="https://github.com/zangcc0474">github.com/zangcc0474</a></li>
-			</ul>
-		</footer>
-	</body>
-</html>
-4
+---
+layout: default
+---
+
+<div class="home">
+
+  <div id="whowhatwhere" class="whowhatwhere">
+    <img src="/images/me.jpeg" alt="Kuan Butts" class="avatar"/>
+    <span class="h3" style="text-shadow: 0 0 10px #FFF;">
+      who, what, where
+    </span>
+
+    <div class="blurb">
+      <div class='splash'>
+        Kuan is a transportation systems researcher and software developer; currently working as a data scientist at <a href="http://urbanfootprint.com/">UrbanFootprint</a> in Berkeley, California.
+      </div>
+      
+      <ul>
+        <li>
+          <div class='splash'>
+            <a href="http://www.codeforamerica.org/people/kuan-butts">2016 Fellow</a> software engineer at <a href="http://www.codeforamerica.org/">Code for America</a>, on <a href="http://c4a-slc.tumblr.com/">Team Salt Lake County</a>.
+            <br>
+            2015 Civic Tech Fellow at <a href="http://microsoftnewyork.com/">Microsoft</a> in New York City, where I developed performance data tools on top of MTA's One-Bus-Away implementation. 
+            <br>
+            Former researcer and developer working on scenario modeling software with the <a href="http://www.media.mit.edu/research/groups/changing-places">MIT Media Lab</a> and <a href="https://mfc.mit.edu/">Flocktracker</a> - a transit network mapping tool - with the <a href="http://smart.mit.edu/research/future-urban-mobility/future-urban-mobility.html">Singapore-MIT Alliance for Research and Technology</a> during and after graduate studies at <a href="http://web.mit.edu/">MIT</a>.
+          </div>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div style="max-width: 540px; margin-top: 25px;"">
+    <a class="twitter-timeline" data-lang="en" data-theme="light" data-link-color="#2B7BB9" href="https://twitter.com/buttsmeister">Tweets by buttsmeister</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+  </div>
+  
+</div>
+
+<script type="text/javascript">
+  // ----------------------------------------------
+  // Generative road network rendering script below
+  // ----------------------------------------------
+  var metas = document.getElementsByTagName('meta');
+  var i;
+  // this allows us to generate a color range and is borrowed
+  // from this JSFiddle: http://jsfiddle.net/snoapps/krzy3jwm/
+  function GColor(r, g, b) {
+    r = (typeof r === 'undefined')?0:r;
+    g = (typeof g === 'undefined')?0:g;
+    b = (typeof b === 'undefined')?0:b;
+    return {r:r, g:g, b:b};
+  }
+  function createColorRange(c1, c2) {
+    var colorList = [], tmpColor;
+    for (var i = 0; i < 255; i++) {
+      tmpColor = new GColor();
+      tmpColor.r = Math.round(c1.r + ((i*(c2.r-c1.r))/255));
+      tmpColor.g = Math.round(c1.g + ((i*(c2.g-c1.g))/255));
+      tmpColor.b = Math.round(c1.b + ((i*(c2.b-c1.b))/255));
+      colorList.push(tmpColor);
+    }
+    return colorList;
+  }
+  // shim for iPhones...
+  if (navigator.userAgent.match(/iPhone/i)) {
+    for (i=0; i<metas.length; i++) {
+      if (metas[i].name == 'viewport') {
+        metas[i].content = 'width=device-width, minimum-scale=1.0, maximum-scale=1.0';
+      }
+    }
+    document.addEventListener('gesturestart', gestureStart, false);
+  }
+  function gestureStart() {
+    for (i=0; i < metas.length; i++) {
+      if (metas[i].name == 'viewport') {
+        metas[i].content = 'width=device-width, minimum-scale=0.25, maximum-scale=1.6';
+      }
+    }
+  }
+  // before we begin, we need a color range for the nodes
+  var lightBlue = new GColor(232, 134, 188);
+  var blue = new GColor(204, 0, 112);
+  var colorRange = createColorRange(lightBlue, blue);
+  var currentPointInRange = 0;
+  // attribution: this is adapted from the
+  // work of: http://codepen.io/piksl/pen/EaxJxX
+  var Boid = function (x, y, angle) {
+      this.x = x;
+      this.y = y;
+      this.angle = Math.pow(Math.random(), 90) + angle;
+      this.dx = Math.cos(this.angle);
+      this.dy = Math.sin(this.angle);
+      this.lifeFactor = Math.random();
+      this.life = this.lifeFactor * 100 + 100;
+      this.age = 0;
+      this.projectedAge = this.life;
+      this.dead = false;
+      // stroke with determines by lifespan
+      this.girth = this.lifeFactor * 3;
+      this.update = function () {
+        if (this.girth < 1.0) {
+          context.strokeStyle = '#29acd1';
+        } else if (this.girth < 2.0) {
+          context.strokeStyle = '#69c9e5';
+        } else {
+          context.strokeStyle = '#d0ecf4';
+        }
+        
+        context.beginPath();
+        context.moveTo(this.x, this.y);
+        this.x += this.dx * 3;
+        this.y += this.dy * 3;
+        this.life -= 1;
+        this.age += 1;
+        context.lineTo(this.x, this.y);
+        context.lineWidth = this.girth;
+        context.stroke();
+        var index = (Math.floor(this.x) + width * Math.floor(this.y)) * 4;
+        if (this.life <= 0) this.kill();
+        if (data[index + 3] > 0) this.kill();
+        // remove if getting drawn off screen
+        if (this.x < 0 || this.x > width) this.kill();
+        // make the bottom edge randomly jagged
+        if (this.y < 0 || this.y > (height - (Math.random() * 100))) this.kill();
+      };
+      this.kill = function () {
+        boids.splice(boids.indexOf(this), 1);
+        this.dead = true;
+        // sometimes, draw a dot like a transit stop
+        if (Math.random() < 0.01) {
+          // we draw each circle a little darker than the last
+          if (currentPointInRange + 1 < colorRange.length) {
+            currentPointInRange += 1;
+          }
+          var rc = colorRange[currentPointInRange];
+          var fillColor = `rgba(${rc.r}, ${rc.g}, ${rc.b}, 0.25)`;
+          context.fillStyle = fillColor;
+          context.beginPath();
+          var radius = Math.max(this.lifeFactor * 5, 1);
+          context.arc(this.x, this.y, radius, 0, (2 * Math.PI));
+          context.fill();
+        }
+      };
+  };
+  var width = window.innerWidth;
+  var baseHeight = 725; // just some min pixel height
+  var height = Math.max(window.innerHeight, baseHeight) + 150;
+  if (height < baseHeight) height = baseHeight;
+  var heightStyleString = 'height:' + height + 'px';
+  var divToDrawIn = document.getElementById('whowhatwhere');
+  divToDrawIn.setAttribute('style', heightStyleString);
+  var canvas = document.getElementById('world');
+  canvas.width = width;
+  canvas.height = height;
+  var context = canvas.getContext('2d');
+  var image, data;
+  var boids = [];
+  boids.push(new Boid((width/2),
+                      (height/2),
+                      (Math.random() * 180 * Math.PI / 180)));
+  var drawRate = (5 / 60.0); // 10 steps per 60 milliseconds?
+  var drawInterval = setInterval(function () {
+      image = context.getImageData(0, 0, width, height);
+      data = image.data;
+      for ( var i = 0; i < boids.length; i ++ ) {
+        var boid = boids[ i ];
+        boid.update();
+        // occasionally make a new spur off a branch
+        if (!boid.dead && Math.random() > 0.5 && boids.length < 500) {
+          var newBoidAngle = ((Math.random() > 0.5 ? 90 : - 90) * Math.PI/180 + boid.angle);
+          boids.push(new Boid(boid.x, boid.y, newBoidAngle));
+        }
+      }
+  }, drawRate);
+  setTimeout(function () {clearInterval(drawInterval)}, 10000);
+</script>
